@@ -31,16 +31,30 @@ export default function Home() {
     if (!user) return;
 
     const channel = supabase
-      .channel("realtime-bookmarks")
+      .channel("bookmarks-changes")
       .on(
         "postgres_changes",
         {
-          event: "*",
+          event: "INSERT",
           schema: "public",
           table: "bookmarks",
           filter: `user_id=eq.${user.id}`,
         },
-        () => fetchBookmarks(user.id),
+        (payload) => {
+          setBookmarks((prev) => [payload.new, ...prev]);
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "DELETE",
+          schema: "public",
+          table: "bookmarks",
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          setBookmarks((prev) => prev.filter((b) => b.id !== payload.old.id));
+        },
       )
       .subscribe();
 
