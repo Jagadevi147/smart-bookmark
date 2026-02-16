@@ -8,10 +8,7 @@ This app allows users to log in using Google, save bookmarks privately, and see 
 
 ## 🚀 Live Demo
 
-👉 https://YOUR-VERCEL-URL.vercel.app
-_(Replace after deployment)_
-
----
+👉 https://smart-bookmark-lemon.vercel.app
 
 ## ✨ Features
 
