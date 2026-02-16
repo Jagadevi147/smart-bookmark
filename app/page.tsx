@@ -31,18 +31,15 @@ export default function Home() {
     if (!user) return;
 
     const channel = supabase
-      .channel("bookmarks-changes")
+      .channel("realtime-bookmarks")
       .on(
         "postgres_changes",
         {
           event: "INSERT",
           schema: "public",
           table: "bookmarks",
-          filter: `user_id=eq.${user.id}`,
         },
-        (payload) => {
-          setBookmarks((prev) => [payload.new, ...prev]);
-        },
+        () => fetchBookmarks(user.id),
       )
       .on(
         "postgres_changes",
@@ -50,14 +47,10 @@ export default function Home() {
           event: "DELETE",
           schema: "public",
           table: "bookmarks",
-          filter: `user_id=eq.${user.id}`,
         },
-        (payload) => {
-          setBookmarks((prev) => prev.filter((b) => b.id !== payload.old.id));
-        },
+        () => fetchBookmarks(user.id),
       )
       .subscribe();
-
     return () => {
       supabase.removeChannel(channel);
     };
