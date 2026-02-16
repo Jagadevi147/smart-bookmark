@@ -14,7 +14,7 @@ export default function Home() {
   const [url, setUrl] = useState("");
   const [bookmarks, setBookmarks] = useState<any[]>([]);
 
-  // get logged user
+  // 🔹 Get logged in user
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -26,7 +26,7 @@ export default function Home() {
     getUser();
   }, []);
 
-  // realtime updates
+  // 🔹 Realtime updates
   useEffect(() => {
     if (!user) return;
 
@@ -49,6 +49,7 @@ export default function Home() {
     };
   }, [user]);
 
+  // 🔹 Fetch bookmarks
   const fetchBookmarks = async (userId: string) => {
     const { data } = await supabase
       .from("bookmarks")
@@ -59,34 +60,50 @@ export default function Home() {
     setBookmarks(data || []);
   };
 
+  // 🔹 Add bookmark (instant UI update)
   const addBookmark = async () => {
     if (!title || !url) return alert("Enter title & URL");
 
-    await supabase.from("bookmarks").insert([{ title, url, user_id: user.id }]);
+    const { data, error } = await supabase
+      .from("bookmarks")
+      .insert([{ title, url, user_id: user.id }])
+      .select();
+
+    if (!error && data) {
+      setBookmarks((prev) => [...data, ...prev]);
+    }
 
     setTitle("");
     setUrl("");
   };
 
+  // 🔹 Delete bookmark (instant UI update)
   const deleteBookmark = async (id: string) => {
-    await supabase.from("bookmarks").delete().eq("id", id);
+    const { error } = await supabase.from("bookmarks").delete().eq("id", id);
+
+    if (!error) {
+      setBookmarks((prev) => prev.filter((b) => b.id !== id));
+    }
   };
 
+  // 🔹 Google login
   const loginWithGoogle = async () => {
     await supabase.auth.signInWithOAuth({ provider: "google" });
   };
 
+  // 🔹 Logout
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
   };
 
-  // LOGIN SCREEN
+  // ================= LOGIN SCREEN =================
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="bg-white shadow-lg rounded-xl p-8 text-center">
           <h1 className="text-3xl font-bold mb-6">Smart Bookmark</h1>
+
           <button
             onClick={loginWithGoogle}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
@@ -98,7 +115,7 @@ export default function Home() {
     );
   }
 
-  // MAIN APP
+  // ================= MAIN APP =================
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center pt-12">
       <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
@@ -135,7 +152,7 @@ export default function Home() {
           Add Bookmark
         </button>
 
-        <h3 className="font-semibold mt-6 mb-2">Your Bookarks</h3>
+        <h3 className="font-semibold mt-6 mb-2">Your Bookmarks</h3>
 
         {bookmarks.length === 0 && (
           <p className="text-gray-400 text-sm">No bookmarks yet</p>
@@ -156,7 +173,7 @@ export default function Home() {
 
             <button
               onClick={() => deleteBookmark(b.id)}
-              className="text-red-500"
+              className="text-red-500 text-lg"
             >
               ❌
             </button>

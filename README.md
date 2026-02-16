@@ -1,36 +1,206 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🔖 Smart Bookmark App
 
-## Getting Started
+A simple real-time bookmark manager built using **Next.js, Supabase, and Tailwind CSS**.
 
-First, run the development server:
+This app allows users to log in using Google, save bookmarks privately, and see updates instantly across multiple tabs.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🚀 Live Demo
+
+👉 https://YOUR-VERCEL-URL.vercel.app
+_(Replace after deployment)_
+
+---
+
+## ✨ Features
+
+✅ Google OAuth login (no email/password)
+✅ Add bookmarks (title + URL)
+✅ Private bookmarks per user
+✅ Delete bookmarks
+✅ Real-time updates across tabs
+✅ Secure database with Row Level Security (RLS)
+✅ Responsive modern UI with Tailwind CSS
+✅ Deployed on Vercel
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+
+- Next.js (App Router)
+- React
+- Tailwind CSS
+
+### Backend / Database
+
+- Supabase Authentication (Google OAuth)
+- Supabase PostgreSQL Database
+- Supabase Realtime
+
+### Deployment
+
+- Vercel
+
+---
+
+## 🔐 Authentication
+
+Users sign in using **Google OAuth** via Supabase.
+
+Only authenticated users can:
+
+- add bookmarks
+- view their bookmarks
+- delete bookmarks
+
+---
+
+## 🔒 Security (Row Level Security)
+
+Supabase RLS policies ensure:
+
+✔ Users can only view their own bookmarks
+✔ Users can only insert their own data
+✔ Users can delete only their bookmarks
+
+This guarantees complete data privacy.
+
+---
+
+## ⚡ Real-Time Updates
+
+The app listens to database changes using Supabase Realtime.
+
+If a bookmark is added in one tab:
+
+👉 it appears instantly in other tabs
+👉 no refresh required
+
+---
+
+## 📂 Database Schema
+
+Table: `bookmarks`
+
+| Column     | Type      |
+| ---------- | --------- |
+| id         | uuid      |
+| user_id    | uuid      |
+| title      | text      |
+| url        | text      |
+| created_at | timestamp |
+
+---
+
+## 🧪 How to Test Realtime
+
+1. Open the app in **two browser tabs**
+2. Add a bookmark in Tab 1
+3. Watch Tab 2
+
+✅ Bookmark appears automatically
+
+---
+
+## 🛠 Problems Faced & Solutions
+
+### ❌ Google login redirect error
+
+**Fix:** Added Supabase callback URL in Google Cloud Console and Supabase URL settings.
+
+---
+
+### ❌ Bookmarks not private
+
+**Fix:** Enabled Row Level Security and created policies using:
+
+```
+auth.uid() = user_id
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### ❌ Realtime updates not working
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Fix:** Enabled Supabase Realtime and added channel listener in React.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+### ❌ Tailwind CSS setup errors
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Fix:** Installed Tailwind correctly and configured globals.css and tailwind.config.js.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+### ❌ Turbopack / Next.js errors
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Fix:** Cleared `.next` folder and restarted server.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## ⚙️ Installation & Setup
+
+### 1️⃣ Clone repository
+
+```
+git clone https://github.com/Jagadevi147/smart-bookmark.git
+cd smart-bookmark
+```
+
+### 2️⃣ Install dependencies
+
+```
+npm install
+```
+
+### 3️⃣ Create environment file
+
+Create `.env.local`:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=your_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key
+```
+
+### 4️⃣ Run project
+
+```
+npm run dev
+```
+
+---
+
+## 🌍 Deployment
+
+Deployed using **Vercel**.
+
+Environment variables were added in Vercel dashboard.
+
+---
+
+## 🎯 Future Improvements
+
+- Edit bookmarks
+- Bookmark categories
+- Search functionality
+- Dark mode
+- Mobile app version
+
+---
+
+## 👩‍💻 Author
+
+**Jagadevi**
+MCA Student – Cambridge Institute of Technology
+Bangalore
+
+---
+
+## ⭐ Project Status
+
+✅ Completed
+✅ Meets all assignment requirements
+✅ Ready for evaluation
